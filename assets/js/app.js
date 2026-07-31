@@ -129,7 +129,8 @@ function pick(items) {
 
 function stateObject(row) {
   const [code, zhName, enName, cities, zips, areaCodes] = row;
-  return { code, zhName, enName, cities, zips, areaCodes };
+  const locations = cities.map((city, index) => ({ city, zip: zips[index] }));
+  return { code, zhName, enName, locations, areaCodes };
 }
 
 function allCandidateStates() {
@@ -156,8 +157,7 @@ function generateAddress() {
   const firstName = pick(FIRST_NAMES);
   const lastName = pick(LAST_NAMES);
   const gender = Math.random() > 0.5 ? t.male : t.female;
-  const city = pick(state.cities);
-  const zip = pick(state.zips);
+  const { city, zip } = pick(state.locations);
   const street = `${Math.floor(100 + Math.random() * 9800)} ${pick(STREETS)}`;
   const stateName = pageLocale === "en" ? state.enName : `${state.zhName} (${state.code})`;
   const fullAddress = `${street}, ${city}, ${state.code} ${zip}, USA`;
