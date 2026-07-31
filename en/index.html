@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US Address Online | Free US Address Generator</title>
+  <meta name="description" content="Generate random US addresses with name, phone number, city, state, ZIP Code and full address. Useful for development, testing and address format reference.">
+  <link rel="canonical" href="https://meiguodizhionline.com/en/">
+  <link rel="alternate" hreflang="zh-CN" href="https://meiguodizhionline.com/">
+  <link rel="alternate" hreflang="en" href="https://meiguodizhionline.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://meiguodizhionline.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="US Address Online | Free US Address Generator">
+  <meta property="og:description" content="Generate US address-format test data for forms, prototypes and QA workflows.">
+  <meta property="og:url" content="https://meiguodizhionline.com/en/">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/en/"><span class="brand-mark">US</span><span>US Address Online</span></a>
+      <div class="nav-links">
+        <a href="/en/">US Address</a>
+        <a href="/tax-free-address/">Tax-Free States</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a class="lang-link" href="/">中文</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Free US address generator</p>
+          <h1>Generate US addresses, ZIP Codes, phone numbers and names</h1>
+          <p>Create address-format test data for web forms, checkout flows, prototypes and QA. Saved records stay in your browser.</p>
+          <div class="trust-row">
+            <span class="pill">No signup</span>
+            <span class="pill">50 states + DC</span>
+            <span class="pill">CSV / JSON export</span>
+            <span class="pill">Local storage</span>
+          </div>
+          <div class="notice">Generated data is for testing and format reference only. It is not guaranteed to be deliverable and must not be used for fraud or unlawful activity.</div>
+        </div>
+        <div class="tool-panel" id="generator">
+          <div class="tool-top">
+            <div class="field"><label for="state-select">State</label><select id="state-select"></select></div>
+            <button class="primary-btn" id="generate-btn" type="button">Generate Address</button>
+          </div>
+          <div class="result-area">
+            <div class="result-head"><h2>Result</h2><div class="actions"><button class="ghost-btn" id="copy-all-btn" type="button">Copy All</button><button class="secondary-btn" id="save-btn" type="button">Save</button></div></div>
+            <div id="address-result" class="empty-state">Generate a US address to start</div>
+          </div>
+          <div class="saved-panel">
+            <div class="saved-head"><h2>Saved Addresses</h2><div class="actions"><button class="ghost-btn" id="export-csv-btn" type="button">Export CSV</button><button class="ghost-btn" id="export-json-btn" type="button">Export JSON</button><button class="danger-btn" id="clear-btn" type="button">Clear</button></div></div>
+            <div id="saved-list" class="saved-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-grid"><div><h3>US Address Online</h3><p>A lightweight US address-format generator for testing.</p></div><div><h4>Tools</h4><a href="/en/">US Address</a><a href="/tax-free-address/">Tax-Free States</a></div><div><h4>Resources</h4><a href="/blog/">Blog</a><a href="/contact/">Contact</a></div><div><h4>Legal</h4><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div></div><div class="container copyright">© 2026 meiguodizhionline.com</div></footer>
+  <div id="toast" class="toast"></div>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
