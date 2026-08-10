@@ -7,7 +7,7 @@
 - 线上域名：`https://meiguodizhionline.com/`
 - GitHub 仓库：`https://github.com/shisanxing1988/meiguodizhionline`
 - 主分支：`main`
-- 当前上线提交：`1994b7e Compact home generator layout`
+- 当前上线提交：以 `git log --oneline -1` 为准；`1994b7e` 是紧凑首页上线版本，后续已继续增加国家入口页。
 - 本地项目路径：`/Users/pengguoxin/Documents/GitHub/meiguodizhionline`
 - 站点类型：纯静态地址生成工具站，部署到 Cloudflare Workers/Pages。
 
@@ -27,9 +27,36 @@
 - `assets/css/styles.css`：全站样式，包含首页紧凑布局、生成器、国家入口、结果卡片和响应式布局。
 - `about/index.html`：关于页面，已改为上下结构，底部展示使用提示。
 - `package.json`：构建和部署脚本。
+- `scripts/generate-country-pages.mjs`：生成 `/countries/` 国家索引页、50 个国家入口页和 `sitemap.xml`。
 - `scripts/build.mjs`：把静态文件复制到 `dist/` 的轻量构建脚本。
 - `wrangler.jsonc`：Cloudflare Wrangler 部署配置，静态资产目录指向 `./dist`。
 - `dist/`：Cloudflare 当前配置下需要的静态输出目录，已提交到 Git。
+
+## SEO 国家入口页
+
+已将 50 个国家和地区拆成可独立收录的静态入口页：
+
+- 国家索引页：`/countries/`
+- 国家详情页示例：
+  - `/countries/us-address-generator/`
+  - `/countries/japan-address-generator/`
+  - `/countries/hong-kong-address-generator/`
+  - `/countries/uk-address-generator/`
+  - `/countries/canada-address-generator/`
+
+生成逻辑：
+
+- 国家列表、slug、标题和描述维护在 `scripts/generate-country-pages.mjs`。
+- 每个国家页都有独立 title、description、canonical。
+- 每个国家页内置同一个生成器，并通过 `data-country-default` 默认选择对应国家。
+- `sitemap.xml` 由脚本自动生成，包含 50 个国家页 URL。
+- 首页导航已增加 `/countries/` 入口。
+
+如果要新增、删除或改国家页面：
+
+1. 修改 `scripts/generate-country-pages.mjs` 中的 `countries` 数组。
+2. 执行 `npm run build`。
+3. 提交 `countries/`、`sitemap.xml`、`dist/` 和相关源文件。
 
 ## 本地常用命令
 
@@ -105,7 +132,7 @@ git -c http.version=HTTP/1.1 push origin main
 
 ## 每次修改后的上线流程
 
-1. 修改源文件，例如 `index.html`、`assets/css/styles.css`、`assets/js/app.js`。
+1. 修改源文件，例如 `index.html`、`assets/css/styles.css`、`assets/js/app.js`、`scripts/generate-country-pages.mjs`。
 2. 执行：
 
 ```bash
@@ -141,6 +168,7 @@ curl -L "https://meiguodizhionline.com/?v=COMMIT_SHA" | sed -n '1,80p'
 ## 已完成的重要提交
 
 - `1994b7e`：首页改为紧凑版生成器布局，当前线上版本。
+- `2fc6d98`：新增项目交接文档。
 - `3fdb8a4`：删除不兼容 Wrangler 的 `_redirects`。
 - `4de95b9`：提交 `dist/`，兼容 Cloudflare 当前 deploy command。
 - `977351a`：新增 `wrangler.jsonc`，指定静态资产目录。
@@ -167,7 +195,8 @@ google.com, pub-9328440079890728, DIRECT, f08c47fec0942fa0
 ## 后续优化建议
 
 - 继续微调首页首屏空间，尤其是桌面端生成器和结果区的高度。
-- 给常用入口做分组，例如北美、欧洲、亚太、拉美、中东。
+- 给 `/countries/` 国家索引页做分组，例如北美、欧洲、亚太、拉美、中东。
 - 为 50 个国家补充更细的地区数据，提高地址格式真实性。
 - 给 `/en/` 页面同步中文首页的布局优化。
+- 增加英文国家入口页，例如 `/en/countries/japan-address-generator/`。
 - 如需恢复 `www` 跳转到裸域名，不要再使用 `_redirects` 的绝对 URL，建议在 Cloudflare Redirect Rules 中配置。

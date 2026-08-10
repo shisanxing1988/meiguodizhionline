@@ -11,6 +11,7 @@ const entries = [
   "assets",
   "blog",
   "contact",
+  "countries",
   "en",
   "favicon.svg",
   "index.html",

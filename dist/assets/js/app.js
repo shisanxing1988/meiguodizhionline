@@ -793,6 +793,10 @@ function fillCountrySelect() {
     ...Object.entries(GENERIC_COUNTRIES).map(([value, country]) => [value, pageLocale === "en" ? country.enName : country.zhName])
   ];
   select.innerHTML = countries.map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+  const defaultCountry = document.body.dataset.countryDefault || new URLSearchParams(window.location.search).get("country");
+  if (defaultCountry && countries.some(([value]) => value === defaultCountry)) {
+    select.value = defaultCountry;
+  }
   updateCountryButtons();
 }
 
@@ -830,7 +834,10 @@ function initGenerator() {
     const del = event.target.closest("[data-delete]");
     if (del) setSaved(getSaved().filter((item) => item.id !== del.dataset.delete));
     const countryButton = event.target.closest("[data-country]");
-    if (countryButton) selectCountry(countryButton.dataset.country);
+    if (countryButton && $("#country-select") && countryButton.tagName !== "A") {
+      event.preventDefault();
+      selectCountry(countryButton.dataset.country);
+    }
     const pageButton = event.target.closest("[data-page]");
     if (pageButton && !pageButton.disabled) {
       currentPage = Number(pageButton.dataset.page) || 1;
