@@ -17,6 +17,10 @@
 - Build command: `npm run build`
 - Build output directory: `dist`
 
+如果使用 Workers 构建里的 Deploy command：
+
+- Deploy command: `npm run deploy`
+
 也可以作为纯静态站部署：
 
 - Build command 留空
