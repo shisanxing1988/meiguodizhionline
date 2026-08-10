@@ -12,16 +12,14 @@
 
 ## Cloudflare Pages 部署
 
-Build command 留空。
+推荐配置：
 
-Build output directory 填：
+- Build command: `npm run build`
+- Build output directory: `dist`
 
-```text
-/
-```
+也可以作为纯静态站部署：
 
-如果 Cloudflare Pages 要求输出目录，填：
+- Build command 留空
+- Build output directory 填 `/` 或 `.`
 
-```text
-.
-```
+如果 Cloudflare Pages 要求输出目录，使用推荐配置即可。
