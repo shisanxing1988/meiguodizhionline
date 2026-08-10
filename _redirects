@@ -1,1 +1,1 @@
-# The www-to-apex redirect is configured at the Cloudflare domain level.
+https://www.meiguodizhionline.com/* https://meiguodizhionline.com/:splat 301

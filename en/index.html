@@ -3,16 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>US Address Online | Free US Address Generator</title>
-  <meta name="description" content="Generate random US addresses with name, phone number, city, state, ZIP Code and full address. Useful for development, testing and address format reference.">
+  <title>US Address Online | Multi-Country Address Generator</title>
+  <meta name="description" content="Generate random address-format test data for 50 common countries and regions, including names, phone numbers, streets, cities, regions, postal codes and full addresses.">
   <link rel="canonical" href="https://meiguodizhionline.com/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://meiguodizhionline.com/">
   <link rel="alternate" hreflang="en" href="https://meiguodizhionline.com/en/">
   <link rel="alternate" hreflang="x-default" href="https://meiguodizhionline.com/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="US Address Online | Free US Address Generator">
-  <meta property="og:description" content="Generate US address-format test data for forms, prototypes and QA workflows.">
+  <meta property="og:title" content="US Address Online | Free Address Generator">
+  <meta property="og:description" content="Generate multi-country address-format test data for forms, prototypes and QA workflows.">
   <meta property="og:url" content="https://meiguodizhionline.com/en/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728"
      crossorigin="anonymous"></script>
@@ -35,12 +36,13 @@
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Free US address generator</p>
-          <h1>Generate US addresses, ZIP Codes, phone numbers and names</h1>
-          <p>Create address-format test data for web forms, checkout flows, prototypes and QA. Saved records stay in your browser.</p>
+          <p class="eyebrow">Free address generator</p>
+          <h1>Generate address test data for 50 common countries and regions</h1>
+          <p>Create address-format test data with names, phone numbers, regions and postal codes for web forms, checkout flows, prototypes and QA.</p>
           <div class="trust-row">
             <span class="pill">No signup</span>
-            <span class="pill">50 states + DC</span>
+            <span class="pill">50 countries & regions</span>
+            <span class="pill">Batch generate</span>
             <span class="pill">CSV / JSON export</span>
             <span class="pill">Local storage</span>
           </div>
@@ -48,17 +50,29 @@
         </div>
         <div class="tool-panel" id="generator">
           <div class="tool-top">
-            <div class="field"><label for="state-select">State</label><select id="state-select"></select></div>
-            <button class="primary-btn" id="generate-btn" type="button">Generate Address</button>
+            <div class="field"><label for="country-select">Country / Region</label><select id="country-select"></select></div>
+            <div class="field"><label for="state-select">State / Region</label><select id="state-select"></select></div>
+            <div class="field compact-field"><label for="batch-count">Quantity</label><select id="batch-count"><option value="1">1</option><option value="5">5</option><option value="10">10</option><option value="20">20</option></select></div>
+            <button class="primary-btn generate-main-btn" id="generate-btn" type="button">Generate Address</button>
           </div>
           <div class="result-area">
             <div class="result-head"><h2>Result</h2><div class="actions"><button class="ghost-btn" id="copy-all-btn" type="button">Copy All</button><button class="secondary-btn" id="save-btn" type="button">Save</button></div></div>
-            <div id="address-result" class="empty-state">Generate a US address to start</div>
+            <div id="address-result" class="empty-state">Choose a country or region, then generate addresses</div>
           </div>
           <div class="saved-panel">
             <div class="saved-head"><h2>Saved Addresses</h2><div class="actions"><button class="ghost-btn" id="export-csv-btn" type="button">Export CSV</button><button class="ghost-btn" id="export-json-btn" type="button">Export JSON</button><button class="danger-btn" id="clear-btn" type="button">Clear</button></div></div>
             <div id="saved-list" class="saved-list"></div>
           </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h2>Built for testing workflows</h2>
+        <div class="section-grid">
+          <article class="feature"><div class="feature-icon">1</div><h3>Multiple regions</h3><p>Generate address formats for 50 common countries and regions across North America, Europe, Asia-Pacific, Latin America, the Middle East and Africa.</p></article>
+          <article class="feature"><div class="feature-icon">2</div><h3>Batch output</h3><p>Create 1, 5, 10 or 20 records at a time for QA, prototypes and seed data.</p></article>
+          <article class="feature"><div class="feature-icon">3</div><h3>Local only</h3><p>Saved records stay in local browser storage and can be exported as CSV or JSON.</p></article>
         </div>
       </div>
     </section>
