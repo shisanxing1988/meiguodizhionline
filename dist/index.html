@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>美国地址在线｜多国家地址生成器</title>
+  <meta name="description" content="美国地址在线提供免费的多国家地址生成器，支持 50 个常用国家和地区地址格式测试数据，可生成姓名、电话、街道、城市、地区、邮编和完整地址。">
+  <link rel="canonical" href="https://meiguodizhionline.com/">
+  <link rel="alternate" hreflang="zh-CN" href="https://meiguodizhionline.com/">
+  <link rel="alternate" hreflang="en" href="https://meiguodizhionline.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://meiguodizhionline.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="美国地址在线｜免费地址生成器">
+  <meta property="og:description" content="快速生成 50 个常用国家和地区的地址、邮编、电话和姓名，适合开发测试和表单格式参考。">
+  <meta property="og:url" content="https://meiguodizhionline.com/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebApplication","name":"美国地址在线","url":"https://meiguodizhionline.com/","applicationCategory":"UtilityApplication","operatingSystem":"Web Browser","isAccessibleForFree":true,"inLanguage":"zh-CN","description":"免费生成多国家地址、邮编、电话和姓名的在线工具。"}
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728"
+     crossorigin="anonymous"></script>
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="/"><span class="brand-mark">US</span><span>美国地址在线</span></a>
+      <div class="nav-links">
+        <a href="/">美国地址</a>
+        <a href="/tax-free-address/">免税州地址</a>
+        <a href="/blog/">博客</a>
+        <a href="/about/">关于</a>
+        <a class="lang-link" href="/en/">English</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">地址生成器 · 免费在线工具</p>
+          <h1>生成 50 个常用国家和地区的地址测试数据</h1>
+          <p>适合开发测试、表单填写演示、跨境电商后台测试和地址格式参考。所有生成结果仅保存在你的浏览器本地。</p>
+          <div class="trust-row">
+            <span class="pill">无需注册</span>
+            <span class="pill">50 个国家和地区</span>
+            <span class="pill">批量生成</span>
+            <span class="pill">CSV / JSON 导出</span>
+            <span class="pill">本地保存</span>
+          </div>
+          <div class="notice">提示：生成内容仅用于测试、开发和地址格式参考，不保证真实可收件，请勿用于违法、欺诈或违反平台规则的用途。</div>
+        </div>
+        <div class="generator-workspace">
+          <div class="tool-panel" id="generator">
+            <div class="tool-top">
+              <div class="field">
+                <label for="country-select">国家/地区</label>
+                <select id="country-select"></select>
+              </div>
+              <div class="field">
+                <label for="state-select">州/地区</label>
+                <select id="state-select"></select>
+              </div>
+              <div class="field compact-field">
+                <label for="batch-count">数量</label>
+                <select id="batch-count">
+                  <option value="1">1</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+              <button class="primary-btn generate-main-btn" id="generate-btn" type="button">立即生成地址</button>
+            </div>
+            <div class="result-area">
+              <div class="result-head">
+                <h2>生成结果</h2>
+                <div class="actions">
+                  <button class="ghost-btn" id="copy-all-btn" type="button">复制全部</button>
+                  <button class="secondary-btn" id="save-btn" type="button">保存</button>
+                </div>
+              </div>
+              <div id="address-result" class="empty-state">选择国家/地区后生成地址</div>
+            </div>
+            <div class="saved-panel">
+              <div class="saved-head">
+                <h2>已保存地址</h2>
+                <div class="actions">
+                  <button class="ghost-btn" id="export-csv-btn" type="button">导出 CSV</button>
+                  <button class="ghost-btn" id="export-json-btn" type="button">导出 JSON</button>
+                  <button class="danger-btn" id="clear-btn" type="button">清空</button>
+                </div>
+              </div>
+              <div id="saved-list" class="saved-list"></div>
+            </div>
+          </div>
+
+          <section class="utility-panel" aria-label="常用入口">
+            <div class="utility-block">
+              <h2>常用入口</h2>
+              <div class="utility-links">
+                <button type="button" data-country="US">美国</button>
+                <button type="button" data-country="GB">英国</button>
+                <button type="button" data-country="CA">加拿大</button>
+                <button type="button" data-country="AU">澳大利亚</button>
+                <button type="button" data-country="JP">日本</button>
+                <button type="button" data-country="HK">香港</button>
+                <button type="button" data-country="SG">新加坡</button>
+                <button type="button" data-country="DE">德国</button>
+                <button type="button" data-country="FR">法国</button>
+                <button type="button" data-country="IT">意大利</button>
+                <button type="button" data-country="ES">西班牙</button>
+                <button type="button" data-country="NL">荷兰</button>
+                <button type="button" data-country="KR">韩国</button>
+                <button type="button" data-country="AE">阿联酋</button>
+              </div>
+              <a href="/tax-free-address/">美国免税州</a>
+            </div>
+            <div class="utility-block muted-block">
+              <h2>字段覆盖</h2>
+              <p>姓名、电话、街道、城市、州/地区、邮编和完整地址。</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section country-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">常用国家快捷选择</p>
+            <h2>点击国家，直接生成对应地址格式</h2>
+          </div>
+          <p>覆盖北美、欧洲、亚太、拉美和中东常见表单测试场景。点击任一国家后会自动切换生成器的国家/地区选项。</p>
+        </div>
+        <div class="country-layout">
+          <div class="country-grid" aria-label="常用国家和地区">
+            <button type="button" class="country-card" data-country="US"><strong>美国</strong><span>United States</span></button>
+            <button type="button" class="country-card" data-country="HK"><strong>香港</strong><span>Hong Kong</span></button>
+            <button type="button" class="country-card" data-country="JP"><strong>日本</strong><span>Japan</span></button>
+            <button type="button" class="country-card" data-country="GB"><strong>英国</strong><span>United Kingdom</span></button>
+            <button type="button" class="country-card" data-country="CA"><strong>加拿大</strong><span>Canada</span></button>
+            <button type="button" class="country-card" data-country="AU"><strong>澳大利亚</strong><span>Australia</span></button>
+            <button type="button" class="country-card" data-country="DE"><strong>德国</strong><span>Germany</span></button>
+            <button type="button" class="country-card" data-country="FR"><strong>法国</strong><span>France</span></button>
+            <button type="button" class="country-card" data-country="CN"><strong>中国</strong><span>China</span></button>
+            <button type="button" class="country-card" data-country="IN"><strong>印度</strong><span>India</span></button>
+            <button type="button" class="country-card" data-country="MX"><strong>墨西哥</strong><span>Mexico</span></button>
+            <button type="button" class="country-card" data-country="BR"><strong>巴西</strong><span>Brazil</span></button>
+            <button type="button" class="country-card" data-country="SG"><strong>新加坡</strong><span>Singapore</span></button>
+            <button type="button" class="country-card" data-country="IT"><strong>意大利</strong><span>Italy</span></button>
+            <button type="button" class="country-card" data-country="ES"><strong>西班牙</strong><span>Spain</span></button>
+            <button type="button" class="country-card" data-country="NL"><strong>荷兰</strong><span>Netherlands</span></button>
+            <button type="button" class="country-card" data-country="KR"><strong>韩国</strong><span>South Korea</span></button>
+            <button type="button" class="country-card" data-country="NZ"><strong>新西兰</strong><span>New Zealand</span></button>
+            <button type="button" class="country-card" data-country="SE"><strong>瑞典</strong><span>Sweden</span></button>
+            <button type="button" class="country-card" data-country="PL"><strong>波兰</strong><span>Poland</span></button>
+            <button type="button" class="country-card" data-country="CH"><strong>瑞士</strong><span>Switzerland</span></button>
+            <button type="button" class="country-card" data-country="TR"><strong>土耳其</strong><span>Turkey</span></button>
+            <button type="button" class="country-card" data-country="AE"><strong>阿联酋</strong><span>United Arab Emirates</span></button>
+            <button type="button" class="country-card" data-country="IE"><strong>爱尔兰</strong><span>Ireland</span></button>
+            <button type="button" class="country-card" data-country="NO"><strong>挪威</strong><span>Norway</span></button>
+            <button type="button" class="country-card" data-country="DK"><strong>丹麦</strong><span>Denmark</span></button>
+            <button type="button" class="country-card" data-country="FI"><strong>芬兰</strong><span>Finland</span></button>
+            <button type="button" class="country-card" data-country="BE"><strong>比利时</strong><span>Belgium</span></button>
+            <button type="button" class="country-card" data-country="AT"><strong>奥地利</strong><span>Austria</span></button>
+            <button type="button" class="country-card" data-country="PT"><strong>葡萄牙</strong><span>Portugal</span></button>
+            <button type="button" class="country-card" data-country="GR"><strong>希腊</strong><span>Greece</span></button>
+            <button type="button" class="country-card" data-country="CZ"><strong>捷克</strong><span>Czechia</span></button>
+            <button type="button" class="country-card" data-country="HU"><strong>匈牙利</strong><span>Hungary</span></button>
+            <button type="button" class="country-card" data-country="RO"><strong>罗马尼亚</strong><span>Romania</span></button>
+            <button type="button" class="country-card" data-country="UA"><strong>乌克兰</strong><span>Ukraine</span></button>
+            <button type="button" class="country-card" data-country="IL"><strong>以色列</strong><span>Israel</span></button>
+            <button type="button" class="country-card" data-country="SA"><strong>沙特阿拉伯</strong><span>Saudi Arabia</span></button>
+            <button type="button" class="country-card" data-country="QA"><strong>卡塔尔</strong><span>Qatar</span></button>
+            <button type="button" class="country-card" data-country="MY"><strong>马来西亚</strong><span>Malaysia</span></button>
+            <button type="button" class="country-card" data-country="TH"><strong>泰国</strong><span>Thailand</span></button>
+            <button type="button" class="country-card" data-country="ID"><strong>印度尼西亚</strong><span>Indonesia</span></button>
+            <button type="button" class="country-card" data-country="PH"><strong>菲律宾</strong><span>Philippines</span></button>
+            <button type="button" class="country-card" data-country="VN"><strong>越南</strong><span>Vietnam</span></button>
+            <button type="button" class="country-card" data-country="PK"><strong>巴基斯坦</strong><span>Pakistan</span></button>
+            <button type="button" class="country-card" data-country="BD"><strong>孟加拉国</strong><span>Bangladesh</span></button>
+            <button type="button" class="country-card" data-country="AR"><strong>阿根廷</strong><span>Argentina</span></button>
+            <button type="button" class="country-card" data-country="CL"><strong>智利</strong><span>Chile</span></button>
+            <button type="button" class="country-card" data-country="CO"><strong>哥伦比亚</strong><span>Colombia</span></button>
+            <button type="button" class="country-card" data-country="PE"><strong>秘鲁</strong><span>Peru</span></button>
+            <button type="button" class="country-card" data-country="ZA"><strong>南非</strong><span>South Africa</span></button>
+          </div>
+          <aside class="country-note">
+            <h3>测试场景</h3>
+            <p>适合检查国家下拉、邮编格式、电话区号、地址换行、CSV 导出和本地保存流程。</p>
+            <a href="/about/">了解数据边界</a>
+            <a href="/privacy/">查看隐私说明</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>为什么使用美国地址在线？</h2>
+        <div class="section-grid">
+          <article class="feature"><div class="feature-icon">1</div><h3>地区更多</h3><p>支持 50 个常用国家和地区地址格式，覆盖州、省、地区、邮编、电话区号和完整地址字段。</p></article>
+          <article class="feature"><div class="feature-icon">2</div><h3>批量生成</h3><p>可以一次生成 1、5、10 或 20 条地址，适合测试数据填充和表单流程检查。</p></article>
+          <article class="feature"><div class="feature-icon">3</div><h3>本地保存</h3><p>保存记录只存在浏览器本地，不需要登录账号，也不会上传到服务器。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq">
+      <div class="container">
+        <h2>常见问题</h2>
+        <details open><summary>生成的地址可以收快递吗？</summary><p>不建议。本站生成的是地址格式测试数据，不保证对应真实可收件地点。</p></details>
+        <details><summary>这个工具适合什么场景？</summary><p>适合网站表单测试、结账流程测试、UI 原型演示、数据库填充和美国地址格式学习。</p></details>
+        <details><summary>香港地址为什么没有邮编？</summary><p>香港日常地址通常不使用邮政编码，所以工具会把邮编字段显示为 N/A，方便测试系统兼容空邮编场景。</p></details>
+        <details><summary>为什么要把城市、地区和邮编一起复制？</summary><p>很多网站会校验 City、State/Region、Postal Code 是否属于同一地区，混用字段容易报错。</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h3>美国地址在线</h3><p>面向中文用户的美国地址格式生成与测试工具。</p></div>
+      <div><h4>工具</h4><a href="/">美国地址</a><a href="/tax-free-address/">免税州地址</a></div>
+      <div><h4>资源</h4><a href="/blog/">博客</a><a href="/contact/">联系我们</a></div>
+      <div><h4>法律</h4><a href="/privacy/">隐私政策</a><a href="/terms/">使用条款</a></div>
+    </div>
+    <div class="container copyright">© 2026 meiguodizhionline.com</div>
+  </footer>
+  <div id="toast" class="toast"></div>
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
