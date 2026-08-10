@@ -6,7 +6,6 @@ const output = join(root, "dist");
 
 const entries = [
   "_headers",
-  "_redirects",
   "about",
   "ads.txt",
   "assets",
