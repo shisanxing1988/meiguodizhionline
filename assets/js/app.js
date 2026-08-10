@@ -858,7 +858,6 @@ function selectCountry(countryCode) {
   currentPage = 1;
   currentAddresses = Array.from({ length: selectedCount() }, () => generateAddress());
   renderAddress(currentAddresses);
-  document.querySelector("#generator")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function updateCountryButtons() {
