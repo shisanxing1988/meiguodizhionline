@@ -797,6 +797,7 @@ function fillCountrySelect() {
   if (defaultCountry && countries.some(([value]) => value === defaultCountry)) {
     select.value = defaultCountry;
   }
+  updateCountryContextLabels();
   updateCountryButtons();
 }
 
@@ -811,6 +812,7 @@ function initGenerator() {
   renderSaved();
   $("#country-select")?.addEventListener("change", () => {
     fillStateSelect();
+    updateCountryContextLabels();
     updateCountryButtons();
   });
   $("#generate-btn")?.addEventListener("click", () => {
@@ -864,6 +866,20 @@ function updateCountryButtons() {
   document.querySelectorAll("[data-country]").forEach((button) => {
     button.classList.toggle("active", button.dataset.country === selected);
   });
+}
+
+function updateCountryContextLabels() {
+  if (pageType !== "country") return;
+  const name = countryName(selectedCountryCode());
+  const generateButton = $("#generate-btn");
+  const resultTitle = document.querySelector(".result-head h2");
+  const result = $("#address-result");
+
+  if (generateButton) generateButton.textContent = `立即生成${name}地址`;
+  if (resultTitle) resultTitle.textContent = `${name}地址生成结果`;
+  if (result?.classList.contains("empty-state")) {
+    result.textContent = `点击按钮生成${name}地址测试数据`;
+  }
 }
 
 if ($("#address-result")) {
