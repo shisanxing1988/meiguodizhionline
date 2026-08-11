@@ -1,13 +1,13 @@
 # meiguodizhionline 项目交接记录
 
-最后更新：2026-08-10
+最后更新：2026-08-11
 
 ## 当前状态
 
 - 线上域名：`https://meiguodizhionline.com/`
 - GitHub 仓库：`https://github.com/shisanxing1988/meiguodizhionline`
 - 主分支：`main`
-- 当前上线提交：以 `git log --oneline -1` 为准；`1994b7e` 是紧凑首页上线版本，后续已继续增加国家入口页。
+- 当前上线提交：`f9002b5`（Fix region dropdown rendering）。
 - 本地项目路径：`/Users/pengguoxin/Documents/GitHub/meiguodizhionline`
 - 站点类型：纯静态地址生成工具站，部署到 Cloudflare Workers/Pages。
 
@@ -19,6 +19,59 @@
 - 支持 50 个常用国家和地区。
 - 批量生成分页显示，每页最多 5 条地址。
 - 常用入口展示更多国家，可直接点击切换生成。
+
+## 2026-08-11 下拉框修复记录
+
+本次处理的问题：
+
+- 线上 `州/地区` 下拉仍是浏览器原生 `<select>`，展开后会出现很大的白色系统下拉层，遮挡页面内容。
+- 之前只修了 `国家/地区` 自定义下拉，`州/地区` 没有接入同一套自定义菜单。
+- 线上一度仍引用旧资源 `styles.20260811-controls1.css` 和 `app.20260811-controls1.js`，所以本地修复不等于线上已生效。
+
+已完成修复：
+
+- `assets/js/app.js` 新增 `renderStateCombobox()`，把 `#state-select` 也渲染为自定义下拉。
+- `州/地区` 原生 select 会被加上 `native-select-hidden`，但仍保留为底层表单值来源。
+- 选择地区后同步底层 `#state-select.value`、按钮文案和 active 状态。
+- 切换国家后会重新生成地区选项，并重建 `州/地区` 自定义菜单。
+- 免税州页面没有国家下拉，但 `州/地区` 自定义下拉同样生效。
+- 国家下拉和地区下拉共用打开、关闭、滚动锁定、点外部关闭、键盘 Enter/空格打开逻辑。
+
+资源版本：
+
+- 当前版本号：`20260811-dropdown2`
+- 首页、英文页、免税页、国家索引页、50 个国家详情页均已引用：
+  - `/assets/css/styles.20260811-dropdown2.css`
+  - `/assets/js/app.20260811-dropdown2.js`
+- `scripts/generate-country-pages.mjs` 中的 `appVersion` 已同步为 `20260811-dropdown2`。
+
+验证记录：
+
+- `npm run build` 通过。
+- 本地 `http://127.0.0.1:4173/?v=dropdown2` 验证通过：
+  - `state-select` 已隐藏。
+  - `[data-state-combobox]` 已渲染。
+  - 美国州/地区菜单 52 项。
+  - 选择 `CA` 后底层值为 `CA`，按钮文案为 `加利福尼亚州 (CA)`。
+- 本地切换国家到日本后验证通过：
+  - 地区菜单重建为 7 项。
+  - 选择 `JP-13` 后文案为 `东京都 (JP-13)`。
+- 本地 `/tax-free-address/?v=dropdown2` 验证通过：
+  - 无国家下拉。
+  - 州/地区自定义下拉 6 项。
+- 线上源码已确认引用 `20260811-dropdown2` 版本资源。
+- 线上 JS 已确认包含 `renderStateCombobox`、`data-state-value`、`toggleSelectCombobox`。
+
+相关提交：
+
+- `3c3f14b`：Reset scroll on site navigation。
+- `f9002b5`：Fix region dropdown rendering。
+
+注意事项：
+
+- 浏览器如果仍显示旧下拉，先强刷：macOS Chrome 使用 `Cmd + Shift + R`。
+- 之后若继续改 JS/CSS，建议继续升级资源版本号，避免用户浏览器缓存旧文件。
+- 本地执行 `npm run deploy` 需要 `CLOUDFLARE_API_TOKEN`；本次手动部署命令因缺少 token 被 Wrangler 拦截，但 GitHub 推送后线上最终已更新到新资源。
 
 ## 主要文件
 
@@ -167,6 +220,9 @@ curl -L "https://meiguodizhionline.com/?v=COMMIT_SHA" | sed -n '1,80p'
 
 ## 已完成的重要提交
 
+- `f9002b5`：修复州/地区原生下拉遮挡问题，并上线 `20260811-dropdown2` 资源版本。
+- `3c3f14b`：站内导航时重置滚动位置。
+- `8d2228a`：修复国家下拉滚动行为。
 - `1994b7e`：首页改为紧凑版生成器布局，当前线上版本。
 - `2fc6d98`：新增项目交接文档。
 - `3fdb8a4`：删除不兼容 Wrangler 的 `_redirects`。
