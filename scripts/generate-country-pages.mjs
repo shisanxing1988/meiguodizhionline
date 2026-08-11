@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const baseUrl = "https://meiguodizhionline.com";
-const appVersion = "20260811-combobox8";
+const appVersion = "20260811-controls1";
 const versionedCss = `/assets/css/styles.${appVersion}.css`;
 const versionedJs = `/assets/js/app.${appVersion}.js`;
 

@@ -847,6 +847,7 @@ function initGenerator() {
   trackSettledScrollPosition();
   fillCountrySelect();
   fillStateSelect();
+  renderBatchControls();
   renderSaved();
   $("#country-select")?.addEventListener("change", () => {
     fillStateSelect();
@@ -889,6 +890,12 @@ function initGenerator() {
       event.preventDefault();
       chooseCountryComboboxOption(comboOption.dataset.countryValue);
     }
+    const batchOption = event.target.closest("[data-batch-value]");
+    if (batchOption) {
+      event.preventDefault();
+      chooseBatchCount(batchOption.dataset.batchValue);
+      return;
+    }
     const pageButton = event.target.closest("[data-page]");
     if (pageButton && !pageButton.disabled) {
       currentPage = Number(pageButton.dataset.page) || 1;
@@ -899,6 +906,54 @@ function initGenerator() {
   document.addEventListener("pointerdown", preventComboboxFocusScroll);
   document.addEventListener("keydown", handleCountryComboboxKeydown);
   document.addEventListener("click", closeCountryComboboxOnOutside);
+}
+
+function initNavigationTopReset() {
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  if (sessionStorage.getItem("meiguodizhionline:forceTop") === "1") {
+    sessionStorage.removeItem("meiguodizhionline:forceTop");
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+  }
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest(".site-header a[href]");
+    if (!link) return;
+    const url = new URL(link.href, window.location.href);
+    if (url.origin === window.location.origin && !url.hash) {
+      sessionStorage.setItem("meiguodizhionline:forceTop", "1");
+    }
+  });
+}
+
+function renderBatchControls() {
+  const select = $("#batch-count");
+  if (!select) return;
+  select.classList.add("native-select-hidden");
+  select.setAttribute("aria-hidden", "true");
+  select.tabIndex = -1;
+
+  let controls = document.querySelector("[data-batch-controls]");
+  if (!controls) {
+    controls = document.createElement("div");
+    controls.className = "batch-controls";
+    controls.dataset.batchControls = "true";
+    select.insertAdjacentElement("afterend", controls);
+  }
+
+  controls.innerHTML = [...select.options].map((option) => `
+    <button class="batch-option ${option.value === select.value ? "active" : ""}" type="button" data-batch-value="${option.value}">
+      ${escapeHtml(option.textContent)}
+    </button>
+  `).join("");
+}
+
+function chooseBatchCount(value) {
+  const select = $("#batch-count");
+  if (!select) return;
+  select.value = value;
+  document.querySelectorAll("[data-batch-value]").forEach((option) => {
+    option.classList.toggle("active", option.dataset.batchValue === value);
+  });
 }
 
 function selectCountry(countryCode) {
@@ -987,10 +1042,11 @@ function closeCountryComboboxOnOutside(event) {
 
 function preventComboboxFocusScroll(event) {
   const button = event.target.closest(".country-combobox-btn");
+  const batchOption = event.target.closest("[data-batch-value]");
   if (button) {
     button.dataset.openScrollY = String(resolveComboboxOpenScrollY(button));
   }
-  if (button || event.target.closest("[data-country-value]")) {
+  if (button || batchOption || event.target.closest("[data-country-value]")) {
     event.preventDefault();
   }
 }
@@ -1084,3 +1140,5 @@ function updateCountryContextLabels() {
 if ($("#address-result")) {
   initGenerator();
 }
+
+initNavigationTopReset();
