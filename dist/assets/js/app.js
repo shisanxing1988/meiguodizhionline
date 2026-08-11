@@ -371,6 +371,11 @@ const storageKey = `meiguodizhionline:saved:${pageLocale}:${pageType}`;
 let currentAddresses = [];
 let currentPage = 1;
 const PAGE_SIZE = 5;
+let lockedScrollY = 0;
+let settledScrollY = 0;
+let recentScrollY = 0;
+let scrollSettleTimer = 0;
+let scrollDecayTimer = 0;
 
 function pick(items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -819,10 +824,10 @@ function renderCountryCombobox(countries) {
 
   const selectedLabel = countryName(select.value);
   combo.innerHTML = `
-    <button class="country-combobox-btn" type="button" aria-expanded="false">
+    <div class="country-combobox-btn" role="button" tabindex="0" aria-expanded="false">
       <span>${escapeHtml(selectedLabel)}</span>
       <span aria-hidden="true">⌄</span>
-    </button>
+    </div>
     <div class="country-combobox-menu" hidden>
       ${countries.map(([value, label]) => `
         <button class="country-combobox-option ${value === select.value ? "active" : ""}" type="button" data-country-value="${value}">
@@ -839,6 +844,7 @@ function selectedCount() {
 }
 
 function initGenerator() {
+  trackSettledScrollPosition();
   fillCountrySelect();
   fillStateSelect();
   renderSaved();
@@ -890,6 +896,8 @@ function initGenerator() {
       document.querySelector("#address-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
+  document.addEventListener("pointerdown", preventComboboxFocusScroll);
+  document.addEventListener("keydown", handleCountryComboboxKeydown);
   document.addEventListener("click", closeCountryComboboxOnOutside);
 }
 
@@ -908,32 +916,48 @@ function selectCountry(countryCode) {
 
 function toggleCountryCombobox(button) {
   const scrollX = window.scrollX;
-  const scrollY = window.scrollY;
   const combo = button.closest("[data-country-combobox]");
   const menu = combo?.querySelector(".country-combobox-menu");
   if (!combo || !menu) return;
   const open = menu.hidden;
-  closeAllCountryComboboxes();
+  const scrollY = open ? resolveComboboxOpenScrollY(button) : window.scrollY;
+  closeAllCountryComboboxes({ unlock: !open });
   menu.hidden = !open;
   button.setAttribute("aria-expanded", String(open));
   if (open) {
+    lockPageScroll(scrollY);
+    positionCountryComboboxMenu(button, menu);
     const active = menu.querySelector(".active");
     if (active) {
       menu.scrollTop = Math.max(0, active.offsetTop - menu.clientHeight / 2);
     }
   }
   window.scrollTo(scrollX, scrollY);
+  requestAnimationFrame(() => window.scrollTo(scrollX, scrollY));
 }
 
 function chooseCountryComboboxOption(countryCode) {
-  const scrollX = window.scrollX;
-  const scrollY = window.scrollY;
   const select = $("#country-select");
   if (!select) return;
   select.value = countryCode;
   select.dispatchEvent(new Event("change", { bubbles: true }));
   closeAllCountryComboboxes();
-  window.scrollTo(scrollX, scrollY);
+}
+
+function positionCountryComboboxMenu(button, menu) {
+  const rect = button.getBoundingClientRect();
+  const gap = 6;
+  const viewportPadding = 12;
+  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
+  const spaceAbove = rect.top - viewportPadding;
+  const menuHeight = Math.min(280, Math.max(180, Math.max(spaceBelow, spaceAbove)));
+  const openAbove = spaceBelow < 220 && spaceAbove > spaceBelow;
+  const top = openAbove ? Math.max(viewportPadding, rect.top - menuHeight - gap) : Math.min(rect.bottom + gap, window.innerHeight - menuHeight - viewportPadding);
+
+  menu.style.left = `${rect.left}px`;
+  menu.style.top = `${top}px`;
+  menu.style.width = `${rect.width}px`;
+  menu.style.maxHeight = `${menuHeight}px`;
 }
 
 function syncCountryCombobox() {
@@ -946,15 +970,94 @@ function syncCountryCombobox() {
   });
 }
 
-function closeAllCountryComboboxes() {
+function closeAllCountryComboboxes(options = {}) {
+  const shouldUnlock = options.unlock !== false;
   document.querySelectorAll("[data-country-combobox]").forEach((combo) => {
-    combo.querySelector(".country-combobox-menu").hidden = true;
+    const menu = combo.querySelector(".country-combobox-menu");
+    menu.hidden = true;
+    menu.removeAttribute("style");
     combo.querySelector(".country-combobox-btn").setAttribute("aria-expanded", "false");
   });
+  if (shouldUnlock) unlockPageScroll();
 }
 
 function closeCountryComboboxOnOutside(event) {
   if (!event.target.closest("[data-country-combobox]")) closeAllCountryComboboxes();
+}
+
+function preventComboboxFocusScroll(event) {
+  const button = event.target.closest(".country-combobox-btn");
+  if (button) {
+    button.dataset.openScrollY = String(resolveComboboxOpenScrollY(button));
+  }
+  if (button || event.target.closest("[data-country-value]")) {
+    event.preventDefault();
+  }
+}
+
+function handleCountryComboboxKeydown(event) {
+  const button = event.target.closest(".country-combobox-btn");
+  if (!button || !["Enter", " "].includes(event.key)) return;
+  event.preventDefault();
+  button.dataset.openScrollY = String(settledScrollY || window.scrollY);
+  toggleCountryCombobox(button);
+}
+
+function trackSettledScrollPosition() {
+  settledScrollY = window.scrollY;
+  recentScrollY = window.scrollY;
+  window.addEventListener("scroll", () => {
+    if (document.body.dataset.scrollLocked === "true") return;
+    if (window.scrollY > recentScrollY) recentScrollY = window.scrollY;
+    clearTimeout(scrollSettleTimer);
+    clearTimeout(scrollDecayTimer);
+    scrollSettleTimer = setTimeout(() => {
+      settledScrollY = window.scrollY;
+    }, 120);
+    scrollDecayTimer = setTimeout(() => {
+      recentScrollY = window.scrollY;
+    }, 900);
+  }, { passive: true });
+}
+
+function resolveComboboxOpenScrollY(button) {
+  const currentY = window.scrollY;
+  const stableY = Math.max(Number(button.dataset.openScrollY || 0), settledScrollY, recentScrollY);
+  const buttonPageTop = button.getBoundingClientRect().top + currentY;
+  const buttonTopAtStableY = buttonPageTop - stableY;
+  const stablePositionLooksVisible = buttonTopAtStableY > 0 && buttonTopAtStableY < window.innerHeight - 80;
+
+  if (stableY > currentY + 80 && stablePositionLooksVisible) {
+    return stableY;
+  }
+
+  return currentY;
+}
+
+function lockPageScroll(scrollY = window.scrollY) {
+  if (document.body.dataset.scrollLocked === "true") return;
+  lockedScrollY = scrollY;
+  document.body.dataset.scrollLocked = "true";
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${lockedScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+}
+
+function unlockPageScroll() {
+  if (document.body.dataset.scrollLocked !== "true") return;
+  const restoreY = lockedScrollY;
+  document.body.dataset.scrollLocked = "false";
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  window.scrollTo(0, restoreY);
+  requestAnimationFrame(() => window.scrollTo(0, restoreY));
+  setTimeout(() => window.scrollTo(0, restoreY), 0);
+  setTimeout(() => window.scrollTo(0, restoreY), 80);
 }
 
 function updateCountryButtons() {

@@ -336,11 +336,8 @@ select {
 }
 
 .country-combobox-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 30;
+  position: fixed;
+  z-index: 80;
   max-height: 280px;
   overflow-y: auto;
   border: 1px solid var(--line);

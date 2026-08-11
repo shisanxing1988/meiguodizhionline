@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const baseUrl = "https://meiguodizhionline.com";
-const appVersion = "20260811-combobox";
+const appVersion = "20260811-combobox7";
 
 const countries = [
   ["US", "美国", "United States", "us-address-generator", "美国地址生成器", "生成美国地址、州、城市、ZIP Code、电话和姓名测试数据。"],
