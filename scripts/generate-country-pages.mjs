@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const baseUrl = "https://meiguodizhionline.com";
-const appVersion = "20260811-navreset1";
+const appVersion = "20260811-dropdown2";
 const versionedCss = `/assets/css/styles.${appVersion}.css`;
 const versionedJs = `/assets/js/app.${appVersion}.js`;
 const earlyScrollReset = `<script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>`;

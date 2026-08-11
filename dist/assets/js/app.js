@@ -782,10 +782,15 @@ function showToast(message) {
 function fillStateSelect() {
   const select = $("#state-select");
   if (!select) return;
+  const previousValue = select.value;
   select.innerHTML = `<option value="RANDOM">${t.randomRegion}</option>` + allCandidateRegions().map((region) => {
     const label = pageLocale === "en" ? `${region.enName} (${region.code})` : `${region.zhName} (${region.code})`;
     return `<option value="${region.code}">${label}</option>`;
   }).join("");
+  if ([...select.options].some((option) => option.value === previousValue)) {
+    select.value = previousValue;
+  }
+  renderStateCombobox();
 }
 
 function fillCountrySelect() {
@@ -818,6 +823,7 @@ function renderCountryCombobox(countries) {
   if (!combo) {
     combo = document.createElement("div");
     combo.className = "country-combobox";
+    combo.dataset.selectCombobox = "country";
     combo.dataset.countryCombobox = "true";
     select.insertAdjacentElement("afterend", combo);
   }
@@ -832,6 +838,38 @@ function renderCountryCombobox(countries) {
       ${countries.map(([value, label]) => `
         <button class="country-combobox-option ${value === select.value ? "active" : ""}" type="button" data-country-value="${value}">
           ${escapeHtml(label)}
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderStateCombobox() {
+  const select = $("#state-select");
+  if (!select) return;
+  select.classList.add("native-select-hidden");
+  select.setAttribute("aria-hidden", "true");
+  select.tabIndex = -1;
+
+  let combo = document.querySelector("[data-state-combobox]");
+  if (!combo) {
+    combo = document.createElement("div");
+    combo.className = "country-combobox";
+    combo.dataset.selectCombobox = "state";
+    combo.dataset.stateCombobox = "true";
+    select.insertAdjacentElement("afterend", combo);
+  }
+
+  const selectedLabel = select.selectedOptions[0]?.textContent || t.randomRegion;
+  combo.innerHTML = `
+    <div class="country-combobox-btn" role="button" tabindex="0" aria-expanded="false">
+      <span>${escapeHtml(selectedLabel)}</span>
+      <span aria-hidden="true">⌄</span>
+    </div>
+    <div class="country-combobox-menu" hidden>
+      ${[...select.options].map((option) => `
+        <button class="country-combobox-option ${option.value === select.value ? "active" : ""}" type="button" data-state-value="${option.value}">
+          ${escapeHtml(option.textContent)}
         </button>
       `).join("")}
     </div>
@@ -855,6 +893,7 @@ function initGenerator() {
     syncCountryCombobox();
     updateCountryButtons();
   });
+  $("#state-select")?.addEventListener("change", syncStateCombobox);
   $("#generate-btn")?.addEventListener("click", () => {
     currentPage = 1;
     currentAddresses = Array.from({ length: selectedCount() }, () => generateAddress());
@@ -883,12 +922,17 @@ function initGenerator() {
     const comboButton = event.target.closest(".country-combobox-btn");
     if (comboButton) {
       event.preventDefault();
-      toggleCountryCombobox(comboButton);
+      toggleSelectCombobox(comboButton);
     }
     const comboOption = event.target.closest("[data-country-value]");
     if (comboOption) {
       event.preventDefault();
       chooseCountryComboboxOption(comboOption.dataset.countryValue);
+    }
+    const stateOption = event.target.closest("[data-state-value]");
+    if (stateOption) {
+      event.preventDefault();
+      chooseStateComboboxOption(stateOption.dataset.stateValue);
     }
     const batchOption = event.target.closest("[data-batch-value]");
     if (batchOption) {
@@ -1001,19 +1045,19 @@ function selectCountry(countryCode) {
   renderAddress(currentAddresses);
 }
 
-function toggleCountryCombobox(button) {
+function toggleSelectCombobox(button) {
   const scrollX = window.scrollX;
-  const combo = button.closest("[data-country-combobox]");
+  const combo = button.closest("[data-select-combobox]");
   const menu = combo?.querySelector(".country-combobox-menu");
   if (!combo || !menu) return;
   const open = menu.hidden;
   const scrollY = open ? resolveComboboxOpenScrollY(button) : window.scrollY;
-  closeAllCountryComboboxes({ unlock: !open });
+  closeAllComboboxes({ unlock: !open });
   menu.hidden = !open;
   button.setAttribute("aria-expanded", String(open));
   if (open) {
     lockPageScroll(scrollY);
-    positionCountryComboboxMenu(button, menu);
+    positionSelectComboboxMenu(button, menu);
     const active = menu.querySelector(".active");
     if (active) {
       menu.scrollTop = Math.max(0, active.offsetTop - menu.clientHeight / 2);
@@ -1028,10 +1072,18 @@ function chooseCountryComboboxOption(countryCode) {
   if (!select) return;
   select.value = countryCode;
   select.dispatchEvent(new Event("change", { bubbles: true }));
-  closeAllCountryComboboxes();
+  closeAllComboboxes();
 }
 
-function positionCountryComboboxMenu(button, menu) {
+function chooseStateComboboxOption(regionCode) {
+  const select = $("#state-select");
+  if (!select) return;
+  select.value = regionCode;
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+  closeAllComboboxes();
+}
+
+function positionSelectComboboxMenu(button, menu) {
   const rect = button.getBoundingClientRect();
   const gap = 6;
   const viewportPadding = 12;
@@ -1057,9 +1109,19 @@ function syncCountryCombobox() {
   });
 }
 
-function closeAllCountryComboboxes(options = {}) {
+function syncStateCombobox() {
+  const select = $("#state-select");
+  const combo = document.querySelector("[data-state-combobox]");
+  if (!select || !combo) return;
+  combo.querySelector(".country-combobox-btn span").textContent = select.selectedOptions[0]?.textContent || t.randomRegion;
+  combo.querySelectorAll("[data-state-value]").forEach((option) => {
+    option.classList.toggle("active", option.dataset.stateValue === select.value);
+  });
+}
+
+function closeAllComboboxes(options = {}) {
   const shouldUnlock = options.unlock !== false;
-  document.querySelectorAll("[data-country-combobox]").forEach((combo) => {
+  document.querySelectorAll("[data-select-combobox]").forEach((combo) => {
     const menu = combo.querySelector(".country-combobox-menu");
     menu.hidden = true;
     menu.removeAttribute("style");
@@ -1069,7 +1131,7 @@ function closeAllCountryComboboxes(options = {}) {
 }
 
 function closeCountryComboboxOnOutside(event) {
-  if (!event.target.closest("[data-country-combobox]")) closeAllCountryComboboxes();
+  if (!event.target.closest("[data-select-combobox]")) closeAllComboboxes();
 }
 
 function preventComboboxFocusScroll(event) {
@@ -1078,7 +1140,7 @@ function preventComboboxFocusScroll(event) {
   if (button) {
     button.dataset.openScrollY = String(resolveComboboxOpenScrollY(button));
   }
-  if (button || batchOption || event.target.closest("[data-country-value]")) {
+  if (button || batchOption || event.target.closest("[data-country-value]") || event.target.closest("[data-state-value]")) {
     event.preventDefault();
   }
 }
@@ -1088,7 +1150,7 @@ function handleCountryComboboxKeydown(event) {
   if (!button || !["Enter", " "].includes(event.key)) return;
   event.preventDefault();
   button.dataset.openScrollY = String(settledScrollY || window.scrollY);
-  toggleCountryCombobox(button);
+  toggleSelectCombobox(button);
 }
 
 function trackSettledScrollPosition() {
