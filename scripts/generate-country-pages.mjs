@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const baseUrl = "https://meiguodizhionline.com";
-const appVersion = "20260810-country-switch";
+const appVersion = "20260811-combobox";
 
 const countries = [
   ["US", "美国", "United States", "us-address-generator", "美国地址生成器", "生成美国地址、州、城市、ZIP Code、电话和姓名测试数据。"],
@@ -78,7 +78,7 @@ function layout({ title, description, canonical, body, countryCode = "" }) {
   <meta name="description" content="${htmlEscape(description)}">
   <link rel="canonical" href="${canonical}">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=${appVersion}">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728" crossorigin="anonymous"></script>
 </head>
 <body data-page="country" ${countryCode ? `data-country-default="${countryCode}"` : ""}>

@@ -797,8 +797,40 @@ function fillCountrySelect() {
   if (defaultCountry && countries.some(([value]) => value === defaultCountry)) {
     select.value = defaultCountry;
   }
+  renderCountryCombobox(countries);
   updateCountryContextLabels();
   updateCountryButtons();
+}
+
+function renderCountryCombobox(countries) {
+  const select = $("#country-select");
+  if (!select) return;
+  select.classList.add("native-select-hidden");
+  select.setAttribute("aria-hidden", "true");
+  select.tabIndex = -1;
+
+  let combo = document.querySelector("[data-country-combobox]");
+  if (!combo) {
+    combo = document.createElement("div");
+    combo.className = "country-combobox";
+    combo.dataset.countryCombobox = "true";
+    select.insertAdjacentElement("afterend", combo);
+  }
+
+  const selectedLabel = countryName(select.value);
+  combo.innerHTML = `
+    <button class="country-combobox-btn" type="button" aria-expanded="false">
+      <span>${escapeHtml(selectedLabel)}</span>
+      <span aria-hidden="true">⌄</span>
+    </button>
+    <div class="country-combobox-menu" hidden>
+      ${countries.map(([value, label]) => `
+        <button class="country-combobox-option ${value === select.value ? "active" : ""}" type="button" data-country-value="${value}">
+          ${escapeHtml(label)}
+        </button>
+      `).join("")}
+    </div>
+  `;
 }
 
 function selectedCount() {
@@ -813,6 +845,7 @@ function initGenerator() {
   $("#country-select")?.addEventListener("change", () => {
     fillStateSelect();
     updateCountryContextLabels();
+    syncCountryCombobox();
     updateCountryButtons();
   });
   $("#generate-btn")?.addEventListener("click", () => {
@@ -840,6 +873,16 @@ function initGenerator() {
       event.preventDefault();
       selectCountry(countryButton.dataset.country);
     }
+    const comboButton = event.target.closest(".country-combobox-btn");
+    if (comboButton) {
+      event.preventDefault();
+      toggleCountryCombobox(comboButton);
+    }
+    const comboOption = event.target.closest("[data-country-value]");
+    if (comboOption) {
+      event.preventDefault();
+      chooseCountryComboboxOption(comboOption.dataset.countryValue);
+    }
     const pageButton = event.target.closest("[data-page]");
     if (pageButton && !pageButton.disabled) {
       currentPage = Number(pageButton.dataset.page) || 1;
@@ -847,6 +890,7 @@ function initGenerator() {
       document.querySelector("#address-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
+  document.addEventListener("click", closeCountryComboboxOnOutside);
 }
 
 function selectCountry(countryCode) {
@@ -854,10 +898,63 @@ function selectCountry(countryCode) {
   if (!select) return;
   select.value = countryCode;
   fillStateSelect();
+  syncCountryCombobox();
+  updateCountryContextLabels();
   updateCountryButtons();
   currentPage = 1;
   currentAddresses = Array.from({ length: selectedCount() }, () => generateAddress());
   renderAddress(currentAddresses);
+}
+
+function toggleCountryCombobox(button) {
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  const combo = button.closest("[data-country-combobox]");
+  const menu = combo?.querySelector(".country-combobox-menu");
+  if (!combo || !menu) return;
+  const open = menu.hidden;
+  closeAllCountryComboboxes();
+  menu.hidden = !open;
+  button.setAttribute("aria-expanded", String(open));
+  if (open) {
+    const active = menu.querySelector(".active");
+    if (active) {
+      menu.scrollTop = Math.max(0, active.offsetTop - menu.clientHeight / 2);
+    }
+  }
+  window.scrollTo(scrollX, scrollY);
+}
+
+function chooseCountryComboboxOption(countryCode) {
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  const select = $("#country-select");
+  if (!select) return;
+  select.value = countryCode;
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+  closeAllCountryComboboxes();
+  window.scrollTo(scrollX, scrollY);
+}
+
+function syncCountryCombobox() {
+  const select = $("#country-select");
+  const combo = document.querySelector("[data-country-combobox]");
+  if (!select || !combo) return;
+  combo.querySelector(".country-combobox-btn span").textContent = countryName(select.value);
+  combo.querySelectorAll("[data-country-value]").forEach((option) => {
+    option.classList.toggle("active", option.dataset.countryValue === select.value);
+  });
+}
+
+function closeAllCountryComboboxes() {
+  document.querySelectorAll("[data-country-combobox]").forEach((combo) => {
+    combo.querySelector(".country-combobox-menu").hidden = true;
+    combo.querySelector(".country-combobox-btn").setAttribute("aria-expanded", "false");
+  });
+}
+
+function closeCountryComboboxOnOutside(event) {
+  if (!event.target.closest("[data-country-combobox]")) closeAllCountryComboboxes();
 }
 
 function updateCountryButtons() {

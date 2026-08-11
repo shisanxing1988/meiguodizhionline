@@ -301,6 +301,75 @@ select {
   background: #fff;
 }
 
+.native-select-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.country-combobox {
+  position: relative;
+}
+
+.country-combobox-btn {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font: inherit;
+  text-align: left;
+}
+
+.country-combobox-btn:hover,
+.country-combobox-btn[aria-expanded="true"] {
+  border-color: rgba(15, 118, 110, 0.55);
+}
+
+.country-combobox-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.16);
+  padding: 6px;
+}
+
+.country-combobox-option {
+  width: 100%;
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  padding: 7px 9px;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  text-align: left;
+}
+
+.country-combobox-option:hover,
+.country-combobox-option.active {
+  background: #f0fdfa;
+  color: var(--brand-strong);
+}
+
 .primary-btn,
 .secondary-btn,
 .ghost-btn,
