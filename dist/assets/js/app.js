@@ -910,17 +910,49 @@ function initGenerator() {
 
 function initNavigationTopReset() {
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-  if (sessionStorage.getItem("meiguodizhionline:forceTop") === "1") {
-    sessionStorage.removeItem("meiguodizhionline:forceTop");
+
+  const restoreTop = () => {
+    if (window.location.hash) return;
     window.scrollTo(0, 0);
     requestAnimationFrame(() => window.scrollTo(0, 0));
+    setTimeout(() => window.scrollTo(0, 0), 0);
+    setTimeout(() => window.scrollTo(0, 0), 80);
+  };
+
+  const markTopNavigation = (link) => {
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin || url.hash) return false;
+    try {
+      sessionStorage.setItem("meiguodizhionline:forceTop", "1");
+    } catch {
+      // Storage can be blocked in some browser modes; the load/pageshow reset below still handles it.
+    }
+    return url.pathname === window.location.pathname && url.search === window.location.search;
+  };
+
+  try {
+    if (sessionStorage.getItem("meiguodizhionline:forceTop") === "1") {
+      sessionStorage.removeItem("meiguodizhionline:forceTop");
+      restoreTop();
+    }
+  } catch {
+    restoreTop();
   }
+
+  window.addEventListener("pageshow", restoreTop);
+  window.addEventListener("load", restoreTop);
+
+  document.addEventListener("pointerdown", (event) => {
+    const link = event.target.closest(".site-header a[href]");
+    if (link) markTopNavigation(link);
+  });
+
   document.addEventListener("click", (event) => {
     const link = event.target.closest(".site-header a[href]");
     if (!link) return;
-    const url = new URL(link.href, window.location.href);
-    if (url.origin === window.location.origin && !url.hash) {
-      sessionStorage.setItem("meiguodizhionline:forceTop", "1");
+    if (markTopNavigation(link)) {
+      event.preventDefault();
+      restoreTop();
     }
   });
 }

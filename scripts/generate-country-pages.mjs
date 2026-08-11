@@ -3,9 +3,10 @@ import { join } from "node:path";
 
 const root = process.cwd();
 const baseUrl = "https://meiguodizhionline.com";
-const appVersion = "20260811-controls1";
+const appVersion = "20260811-navreset1";
 const versionedCss = `/assets/css/styles.${appVersion}.css`;
 const versionedJs = `/assets/js/app.${appVersion}.js`;
+const earlyScrollReset = `<script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>`;
 
 const countries = [
   ["US", "美国", "United States", "us-address-generator", "美国地址生成器", "生成美国地址、州、城市、ZIP Code、电话和姓名测试数据。"],
@@ -76,6 +77,7 @@ function layout({ title, description, canonical, body, countryCode = "" }) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  ${earlyScrollReset}
   <title>${htmlEscape(title)}</title>
   <meta name="description" content="${htmlEscape(description)}">
   <link rel="canonical" href="${canonical}">
