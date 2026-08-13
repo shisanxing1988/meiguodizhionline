@@ -658,6 +658,12 @@ function copyText(text) {
   navigator.clipboard.writeText(text).then(() => showToast(t.copied)).catch(() => {
     const area = document.createElement("textarea");
     area.value = text;
+    area.style.position = "fixed";
+    area.style.left = "0";
+    area.style.top = "0";
+    area.style.width = "1px";
+    area.style.height = "1px";
+    area.style.opacity = "0";
     document.body.appendChild(area);
     area.select();
     document.execCommand("copy");
@@ -895,29 +901,33 @@ function initGenerator() {
   });
   $("#state-select")?.addEventListener("change", syncStateCombobox);
   $("#generate-btn")?.addEventListener("click", () => {
-    currentPage = 1;
-    currentAddresses = Array.from({ length: selectedCount() }, () => generateAddress());
-    renderAddress(currentAddresses);
+    preservePageScroll(() => {
+      currentPage = 1;
+      currentAddresses = Array.from({ length: selectedCount() }, () => generateAddress());
+      renderAddress(currentAddresses);
+    });
   });
-  $("#copy-all-btn")?.addEventListener("click", () => currentAddresses.length ? copyText(addressesText(currentAddresses)) : showToast(t.needGenerate));
-  $("#save-btn")?.addEventListener("click", saveCurrent);
-  $("#export-csv-btn")?.addEventListener("click", () => exportSaved("csv"));
-  $("#export-json-btn")?.addEventListener("click", () => exportSaved("json"));
+  $("#copy-all-btn")?.addEventListener("click", () => preservePageScroll(() => currentAddresses.length ? copyText(addressesText(currentAddresses)) : showToast(t.needGenerate)));
+  $("#save-btn")?.addEventListener("click", () => preservePageScroll(saveCurrent));
+  $("#export-csv-btn")?.addEventListener("click", () => preservePageScroll(() => exportSaved("csv")));
+  $("#export-json-btn")?.addEventListener("click", () => preservePageScroll(() => exportSaved("json")));
   $("#clear-btn")?.addEventListener("click", () => {
-    setSaved([]);
-    showToast(t.cleared);
+    preservePageScroll(() => {
+      setSaved([]);
+      showToast(t.cleared);
+    });
   });
   document.addEventListener("click", (event) => {
     const copyTarget = event.target.closest("[data-copy]");
-    if (copyTarget) copyText(copyTarget.dataset.copy);
+    if (copyTarget) preservePageScroll(() => copyText(copyTarget.dataset.copy));
     const copySaved = event.target.closest("[data-copy-saved]");
-    if (copySaved) copyText(copySaved.dataset.copySaved);
+    if (copySaved) preservePageScroll(() => copyText(copySaved.dataset.copySaved));
     const del = event.target.closest("[data-delete]");
-    if (del) setSaved(getSaved().filter((item) => item.id !== del.dataset.delete));
+    if (del) preservePageScroll(() => setSaved(getSaved().filter((item) => item.id !== del.dataset.delete)));
     const countryButton = event.target.closest("[data-country]");
     if (countryButton && $("#country-select") && countryButton.tagName !== "A") {
       event.preventDefault();
-      selectCountry(countryButton.dataset.country);
+      preservePageScroll(() => selectCountry(countryButton.dataset.country));
     }
     const comboButton = event.target.closest(".country-combobox-btn");
     if (comboButton) {
@@ -942,14 +952,33 @@ function initGenerator() {
     }
     const pageButton = event.target.closest("[data-page]");
     if (pageButton && !pageButton.disabled) {
-      currentPage = Number(pageButton.dataset.page) || 1;
-      renderAddress(currentAddresses);
-      document.querySelector("#address-result")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      preservePageScroll(() => {
+        currentPage = Number(pageButton.dataset.page) || 1;
+        renderAddress(currentAddresses);
+      });
     }
   });
   document.addEventListener("pointerdown", preventComboboxFocusScroll);
   document.addEventListener("keydown", handleCountryComboboxKeydown);
   document.addEventListener("click", closeCountryComboboxOnOutside);
+}
+
+function preservePageScroll(action) {
+  if (document.body.dataset.scrollLocked === "true") {
+    action();
+    return;
+  }
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  action();
+  restorePageScroll(scrollX, scrollY);
+}
+
+function restorePageScroll(scrollX, scrollY) {
+  window.scrollTo(scrollX, scrollY);
+  requestAnimationFrame(() => window.scrollTo(scrollX, scrollY));
+  setTimeout(() => window.scrollTo(scrollX, scrollY), 0);
+  setTimeout(() => window.scrollTo(scrollX, scrollY), 80);
 }
 
 function initNavigationTopReset() {
