@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>
+  <title>跨境电商结账地址表单测试清单：从字段覆盖到异常输入</title>
+  <meta name="description" content="面向跨境电商结账页、CRM 和物流地址表单，整理地址字段覆盖、异常输入、国际电话、邮编和保存地址的测试清单。">
+  <link rel="canonical" href="https://meiguodizhionline.com/blog/cross-border-checkout-address-testing/">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><nav class="nav"><a class="brand" href="/"><span class="brand-mark">US</span><span>美国地址在线</span></a><div class="nav-links"><a href="/">美国地址</a><a href="/countries/">国家入口</a><a href="/tax-free-address/">免税州地址</a><a href="/blog/">博客</a><a href="/about/">关于</a></div></nav></header>
+  <main class="container content-page">
+    <p class="eyebrow">跨境表单测试</p>
+    <h1>跨境电商结账地址表单测试清单：从字段覆盖到异常输入</h1>
+    <div class="article-meta"><span>更新：2026-08-13</span><span>适用：Checkout、CRM、物流地址表单</span></div>
+    <article class="article-body">
+      <p>地址表单是跨境电商结账流程中最容易出问题的模块之一。它同时影响税费、运费、支付风控、物流服务范围、订单通知和客服查询。高质量测试不应只验证“能提交”，还要覆盖字段边界、国家差异、保存地址和错误恢复。</p>
+
+      <h2>字段覆盖清单</h2>
+      <table class="article-table">
+        <thead><tr><th>字段</th><th>测试重点</th><th>常见风险</th></tr></thead>
+        <tbody>
+          <tr><td>姓名</td><td>空格、短名、长名、大小写</td><td>字符截断或导出乱码</td></tr>
+          <tr><td>电话</td><td>国家区号、括号、空格、短横线</td><td>支付或物流接口拒绝</td></tr>
+          <tr><td>街道地址</td><td>门牌号、街道名、超长地址</td><td>换行溢出、标签打印失败</td></tr>
+          <tr><td>Address Line 2</td><td>Apt、Suite、Unit 可选</td><td>二级地址丢失</td></tr>
+          <tr><td>城市/州/邮编</td><td>组合匹配和必填规则</td><td>税费和配送范围计算错误</td></tr>
+          <tr><td>国家</td><td>切换国家后字段变化</td><td>仍按上一个国家校验</td></tr>
+        </tbody>
+      </table>
+
+      <h2>正常流程测试</h2>
+      <ol>
+        <li>选择国家后，表单字段、州/地区下拉和邮编提示应同步变化。</li>
+        <li>填写完整地址后，应能进入运费和支付步骤。</li>
+        <li>返回上一步时，用户输入不应丢失。</li>
+        <li>保存地址后，账户中心和下一次结账应能复用。</li>
+        <li>修改地址后，税费、运费和预计送达时间应重新计算。</li>
+      </ol>
+
+      <h2>异常输入测试</h2>
+      <ul>
+        <li>邮编为空、过短、过长、包含字母或符号。</li>
+        <li>电话为空、无国家区号、包含不可见空格。</li>
+        <li>街道地址超过物流标签限制。</li>
+        <li>城市和州不匹配。</li>
+        <li>国家切换后保留了旧州缩写。</li>
+        <li>用户复制粘贴整段地址到单个字段。</li>
+      </ul>
+
+      <h2>国际化测试</h2>
+      <p>多国家地址表单要特别注意字段顺序和必填规则。美国通常需要 State 和 ZIP Code，日本需要都道府县，英国使用 postcode，香港可能没有传统邮编。一个表单如果强行要求所有国家都填写同样字段，用户体验和通过率都会下降。</p>
+
+      <h2>验收标准</h2>
+      <p>推荐把地址表单验收拆成四层：UI 字段显示正确、前端校验提示清晰、后端保存字段完整、外部服务返回可追踪。每一个失败场景都应保留用户输入，并给出能行动的提示，而不是只显示“地址无效”。</p>
+    </article>
+  </main>
+</body>
+</html>

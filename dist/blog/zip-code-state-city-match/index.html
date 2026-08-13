@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>
+  <title>ZIP Code、城市和州为什么不匹配？表单报错原因与测试方法</title>
+  <meta name="description" content="解释美国 ZIP Code 与城市、州匹配失败的常见原因，并提供地址表单、结账页和后端校验的测试方法。">
+  <link rel="canonical" href="https://meiguodizhionline.com/blog/zip-code-state-city-match/">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><nav class="nav"><a class="brand" href="/"><span class="brand-mark">US</span><span>美国地址在线</span></a><div class="nav-links"><a href="/">美国地址</a><a href="/countries/">国家入口</a><a href="/tax-free-address/">免税州地址</a><a href="/blog/">博客</a><a href="/about/">关于</a></div></nav></header>
+  <main class="container content-page">
+    <p class="eyebrow">ZIP Code 校验</p>
+    <h1>ZIP Code、城市和州为什么不匹配？表单报错原因与测试方法</h1>
+    <div class="article-meta"><span>更新：2026-08-13</span><span>适用：结账页、注册页、地址校验接口</span></div>
+    <article class="article-body">
+      <p>很多地址表单并不是只检查 ZIP Code 是否为 5 位数字，还会同时检查城市、州和邮编是否属于同一地理区域。当前端提示 “ZIP Code does not match city/state” 时，问题通常不是邮编格式，而是字段之间的组合不成立。</p>
+
+      <h2>ZIP Code 校验通常检查什么</h2>
+      <ul>
+        <li><strong>格式</strong>：是否为 5 位数字，或是否支持 ZIP+4。</li>
+        <li><strong>州匹配</strong>：邮编是否属于所选 State。</li>
+        <li><strong>城市匹配</strong>：城市名是否能与邮编覆盖区域对应。</li>
+        <li><strong>服务范围</strong>：物流、支付或商家是否服务该地区。</li>
+        <li><strong>地址标准化</strong>：第三方接口可能会把城市名、缩写、大小写自动改写。</li>
+      </ul>
+
+      <h2>常见报错原因</h2>
+      <table class="article-table">
+        <thead><tr><th>问题</th><th>表现</th><th>测试建议</th></tr></thead>
+        <tbody>
+          <tr><td>州缩写错误</td><td>ZIP 合法但 State 不匹配</td><td>准备同城市不同州、同州不同城市样例</td></tr>
+          <tr><td>城市别名</td><td>用户填别名，接口返回标准城市名</td><td>检查系统是否接受标准化后的城市名</td></tr>
+          <tr><td>ZIP+4 不兼容</td><td>输入 9 位邮编时报格式错误</td><td>确认表单是否只允许 5 位 ZIP</td></tr>
+          <tr><td>前后空格</td><td>肉眼看正确但校验失败</td><td>覆盖粘贴输入和 trim 逻辑</td></tr>
+          <tr><td>服务地区限制</td><td>地址格式正确但无法下单</td><td>区分格式校验和业务规则校验</td></tr>
+        </tbody>
+      </table>
+
+      <h2>前端测试清单</h2>
+      <ol>
+        <li>ZIP Code 输入框是否限制非数字字符。</li>
+        <li>ZIP+4 格式是否被允许，例如 <code>94103-1234</code>。</li>
+        <li>State 是下拉选择还是自由输入。</li>
+        <li>城市大小写、连字符、空格是否被正确处理。</li>
+        <li>提交失败时错误提示是否指向具体字段。</li>
+        <li>修改 State 后，ZIP Code 是否需要重新校验。</li>
+      </ol>
+
+      <h2>后端和第三方接口测试清单</h2>
+      <p>后端测试要把“格式正确”和“地址可服务”分开。一个 ZIP Code 可以格式正确，但不在商家配送范围内；也可能在配送范围内，但城市字段没有被标准化而导致失败。</p>
+      <ul>
+        <li>记录第三方地址校验接口返回的标准化字段。</li>
+        <li>检查前端展示值与后端保存值是否一致。</li>
+        <li>确认失败时是否保留用户输入，避免用户重新填写整张表单。</li>
+        <li>准备边界样例：不存在的 ZIP、合法但不服务的 ZIP、城市大小写差异、州缩写差异。</li>
+      </ul>
+
+      <div class="article-note">如果你只是做 UI 和字段覆盖测试，可以使用格式样例；如果涉及支付、物流或税费计算，需要接入真实地址校验和业务规则测试。</div>
+    </article>
+  </main>
+</body>
+</html>

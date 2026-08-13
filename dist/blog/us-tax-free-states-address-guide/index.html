@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>
+  <title>美国免税州地址测试指南：AK、DE、MT、NH、OR 怎么选？</title>
+  <meta name="description" content="整理美国常见免税州 AK、DE、MT、NH、OR 的地址测试价值、字段注意事项和跨境电商结账页测试清单。">
+  <link rel="canonical" href="https://meiguodizhionline.com/blog/us-tax-free-states-address-guide/">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><nav class="nav"><a class="brand" href="/"><span class="brand-mark">US</span><span>美国地址在线</span></a><div class="nav-links"><a href="/">美国地址</a><a href="/countries/">国家入口</a><a href="/tax-free-address/">免税州地址</a><a href="/blog/">博客</a><a href="/about/">关于</a></div></nav></header>
+  <main class="container content-page">
+    <p class="eyebrow">免税州地址</p>
+    <h1>美国免税州地址测试指南：AK、DE、MT、NH、OR 怎么选？</h1>
+    <div class="article-meta"><span>更新：2026-08-13</span><span>适用：税费展示、结账页、订单测试</span></div>
+    <article class="article-body">
+      <p>跨境电商和结账系统经常需要测试不同州的税费展示。美国常被用于免税州测试的州包括 Alaska、Delaware、Montana、New Hampshire 和 Oregon。对开发和 QA 来说，免税州地址的核心价值不是“绕过税费”，而是验证系统是否能正确识别州、计算税费和展示订单总价。</p>
+      <div class="article-note">不同商品、平台和地区可能有特殊税费规则。本文只用于测试场景说明，不构成税务建议。</div>
+
+      <h2>常见免税州对照</h2>
+      <table class="article-table">
+        <thead><tr><th>州缩写</th><th>州名</th><th>测试重点</th></tr></thead>
+        <tbody>
+          <tr><td>AK</td><td>Alaska</td><td>地址距离远，适合测试运费、配送范围和税费拆分。</td></tr>
+          <tr><td>DE</td><td>Delaware</td><td>商业地址常见，适合测试账单地址和公司地址字段。</td></tr>
+          <tr><td>MT</td><td>Montana</td><td>城市名和 ZIP 组合较分散，适合测试地区选择。</td></tr>
+          <tr><td>NH</td><td>New Hampshire</td><td>适合测试东海岸地址、电话区号和邮编匹配。</td></tr>
+          <tr><td>OR</td><td>Oregon</td><td>常见测试州，适合结账页税费为 0 的展示验证。</td></tr>
+        </tbody>
+      </table>
+
+      <h2>免税州地址测试要看什么</h2>
+      <ol>
+        <li>State 字段是否保存为正确缩写，例如 <code>OR</code> 而不是 <code>Oregon</code>。</li>
+        <li>ZIP Code 是否与城市、州组合匹配。</li>
+        <li>税费是否在商品页、购物车、结账页和订单详情中保持一致。</li>
+        <li>税费为 0 时，页面是否显示为 <code>$0.00</code>、<code>Tax Free</code> 或隐藏税费行。</li>
+        <li>切换地址后，订单总价是否重新计算。</li>
+        <li>保存地址后再次下单，税费是否仍按保存地址计算。</li>
+      </ol>
+
+      <h2>容易漏测的边界场景</h2>
+      <ul>
+        <li>同一用户保存多个州地址后切换默认地址。</li>
+        <li>账单地址和配送地址不一致。</li>
+        <li>礼品卡、数字商品、订阅商品和实物商品税费规则不同。</li>
+        <li>运费参与税费计算或不参与税费计算。</li>
+        <li>第三方支付页返回后，订单金额与站内金额不一致。</li>
+      </ul>
+
+      <h2>建议的测试组合</h2>
+      <p>至少准备三类地址：一个免税州地址、一个高税率州地址、一个业务不支持配送的地址。这样可以同时验证税费为 0、税费正常计算和业务限制提示。测试时要记录商品金额、运费、税费、优惠和最终支付金额，避免只看单个 Tax 字段。</p>
+      <p>如果只是需要免税州格式样例，可以使用本站的免税州地址生成器，生成 AK、DE、MT、NH、OR 的测试地址。</p>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>
+  <title>美国地址格式怎么填？Street、City、State、ZIP Code 完整指南</title>
+  <meta name="description" content="详解美国地址格式填写顺序、Street Address、City、State、ZIP Code、Apt/Suite 等字段含义，适合表单测试和地址格式参考。">
+  <link rel="canonical" href="https://meiguodizhionline.com/blog/us-address-format-guide/">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9328440079890728" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header"><nav class="nav"><a class="brand" href="/"><span class="brand-mark">US</span><span>美国地址在线</span></a><div class="nav-links"><a href="/">美国地址</a><a href="/countries/">国家入口</a><a href="/tax-free-address/">免税州地址</a><a href="/blog/">博客</a><a href="/about/">关于</a></div></nav></header>
+  <main class="container content-page">
+    <p class="eyebrow">美国地址格式</p>
+    <h1>美国地址格式怎么填？Street、City、State、ZIP Code 完整指南</h1>
+    <div class="article-meta"><span>更新：2026-08-13</span><span>适用：表单测试、地址字段设计、QA 验收</span></div>
+    <article class="article-body">
+      <p>美国地址看起来简单，但在注册、结账、物流、CRM 和支付风控表单里，字段顺序、缩写和邮编匹配都可能影响校验结果。一个典型美国地址通常由街道地址、城市、州缩写和 ZIP Code 组成，必要时还会带 Apt、Suite、Unit 等二级地址。</p>
+      <div class="article-note">本文只讨论地址格式和测试数据设计，不代表地址真实可收件。做开发和 QA 时，应把生成地址当作格式样例，而不是现实住址验证。</div>
+
+      <h2>标准美国地址结构</h2>
+      <p>常见写法可以拆成四层：</p>
+      <ol>
+        <li><strong>Recipient name</strong>：收件人姓名，很多测试场景可选。</li>
+        <li><strong>Street Address</strong>：门牌号 + 街道名，例如 <code>5160 Oak Ave</code>。</li>
+        <li><strong>Address Line 2</strong>：公寓、套房、单元号，例如 <code>Apt 8B</code> 或 <code>Suite 210</code>。</li>
+        <li><strong>City, State ZIP Code</strong>：城市、州缩写和邮编，例如 <code>Raleigh, NC 27601</code>。</li>
+      </ol>
+
+      <h2>常见字段中英文对照</h2>
+      <table class="article-table">
+        <thead><tr><th>英文标签</th><th>中文含义</th><th>填写示例</th></tr></thead>
+        <tbody>
+          <tr><td>Street Address / Address Line 1</td><td>街道地址</td><td>5160 Oak Ave</td></tr>
+          <tr><td>Apt / Suite / Unit</td><td>公寓、套房或单元号</td><td>Apt 8B</td></tr>
+          <tr><td>City</td><td>城市</td><td>Raleigh</td></tr>
+          <tr><td>State / Province / Region</td><td>州或地区</td><td>NC</td></tr>
+          <tr><td>ZIP Code / Postal Code</td><td>邮政编码</td><td>27601</td></tr>
+          <tr><td>Phone</td><td>电话</td><td>+1 (919) 555-0138</td></tr>
+        </tbody>
+      </table>
+
+      <h2>一行地址和多行地址怎么写</h2>
+      <p>多行地址更适合表单字段拆分：</p>
+      <p><code>5160 Oak Ave<br>Raleigh, NC 27601<br>United States</code></p>
+      <p>一行地址更适合导出、复制和搜索：</p>
+      <p><code>5160 Oak Ave, Raleigh, NC 27601, United States</code></p>
+
+      <h2>最常见的填写错误</h2>
+      <ul>
+        <li>把州全名和州缩写混用，例如表单要求 <code>CA</code> 却填写 <code>California</code>。</li>
+        <li>城市、州和 ZIP Code 不匹配，例如洛杉矶城市搭配纽约邮编。</li>
+        <li>把 Apt/Suite 写进 City 字段，导致后端解析失败。</li>
+        <li>电话没有国家区号，或区号与州/城市预期不一致。</li>
+        <li>把国家写成 <code>America</code>，而表单选项实际需要 <code>United States</code> 或 <code>US</code>。</li>
+      </ul>
+
+      <h2>开发和测试建议</h2>
+      <p>测试美国地址表单时，不要只准备一个“正常地址”。更稳的做法是准备多组样例：普通街道地址、带 Apt 的公寓地址、带 Suite 的商业地址、长街道名地址、短城市名地址、五位 ZIP 和 ZIP+4 地址。这样可以覆盖输入长度、换行、导出、复制和后端校验。</p>
+      <p>如果你需要快速生成格式样例，可以回到首页使用美国地址生成器，并结合本文字段表逐项检查。</p>
+    </article>
+  </main>
+</body>
+</html>

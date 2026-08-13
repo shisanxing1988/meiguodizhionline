@@ -8,6 +8,14 @@ const versionedCss = `/assets/css/styles.${appVersion}.css`;
 const versionedJs = `/assets/js/app.${appVersion}.js`;
 const earlyScrollReset = `<script>if("scrollRestoration"in history)history.scrollRestoration="manual";if(!location.hash)scrollTo(0,0);</script>`;
 
+const blogPosts = [
+  "/blog/us-address-format-guide/",
+  "/blog/zip-code-state-city-match/",
+  "/blog/us-tax-free-states-address-guide/",
+  "/blog/cross-border-checkout-address-testing/",
+  "/blog/international-address-format-differences/"
+];
+
 const countries = [
   ["US", "美国", "United States", "us-address-generator", "美国地址生成器", "生成美国地址、州、城市、ZIP Code、电话和姓名测试数据。"],
   ["HK", "香港", "Hong Kong", "hong-kong-address-generator", "香港地址生成器", "生成香港地区地址、电话、街道和无邮编场景测试数据。"],
@@ -255,6 +263,7 @@ function sitemap() {
     ["/privacy/", "0.3"],
     ["/terms/", "0.3"],
     ["/contact/", "0.3"],
+    ...blogPosts.map((path) => [path, "0.65"]),
     ...countries.map(([, , , slug]) => [`/countries/${slug}/`, "0.85"])
   ];
   return `<?xml version="1.0" encoding="UTF-8"?>
