@@ -1,13 +1,13 @@
 # meiguodizhionline 项目交接记录
 
-最后更新：2026-08-13
+最后更新：2026-08-14
 
 ## 1. 项目概览
 
 - 线上域名：`https://meiguodizhionline.com/`
 - GitHub 仓库：`https://github.com/shisanxing1988/meiguodizhionline`
 - 主分支：`main`
-- 当前最新提交：`8783c54`（Prevent control clicks from scrolling page）
+- 当前最新提交：`0a37b00`（Add address format blog articles）
 - 本地项目路径：`/Users/pengguoxin/Documents/GitHub/meiguodizhionline`
 - 站点类型：纯静态地址生成工具站，部署到 Cloudflare Workers/Pages。
 
@@ -49,11 +49,40 @@
 
 注意：
 
-- 如果线上首页仍引用 `20260811-dropdown2`，说明 Cloudflare 自动部署还没切到最新 `8783c54`。
 - 本地手动执行 `npm run deploy` 需要 `CLOUDFLARE_API_TOKEN`，否则 Wrangler 会在非交互环境中报错。
 - 之后每次改 JS/CSS，建议升级 `scripts/generate-country-pages.mjs` 中的 `appVersion`，避免浏览器缓存旧资源。
 
 ## 4. 最近问题记录
+
+### 4.0 2026-08-14 博客文章上线和 Cloudflare 部署归档
+
+提交：
+
+- `0a37b00`：Add address format blog articles
+
+新增文章：
+
+- `/blog/us-address-format-guide/`
+- `/blog/zip-code-state-city-match/`
+- `/blog/us-tax-free-states-address-guide/`
+- `/blog/cross-border-checkout-address-testing/`
+- `/blog/international-address-format-differences/`
+
+部署结果：
+
+- 用户在本机终端执行 `npm run deploy` 成功。
+- Wrangler 读取 `dist` 目录 147 个文件。
+- 部署 Worker：`meiguodizhionline`
+- Workers.dev 地址：`https://meiguodizhionline.shisanxing1988.workers.dev`
+- Current Version ID：`268dced1-7fda-429f-8aa2-af77cb1ec76c`
+- 线上域名已验证：
+  - `https://meiguodizhionline.com/blog/` 已包含 5 篇新文章链接。
+  - `https://meiguodizhionline.com/blog/us-address-format-guide/` 返回 `HTTP/2 200`。
+
+部署后本地变化：
+
+- Wrangler 会生成 `.wrangler/` 本地缓存目录，其中可能包含账号缓存文件，例如 `.wrangler/cache/wrangler-account.json`。
+- `.wrangler/` 不应提交到 Git，已加入 `.gitignore`。
 
 ### 4.1 点击控件导致页面滚动
 
@@ -98,7 +127,7 @@
 部署状态：
 
 - GitHub 已推送到 `origin/main`。
-- 检查时线上仍引用 `20260811-dropdown2`，需要等待 Cloudflare 自动部署或在有 `CLOUDFLARE_API_TOKEN` 的环境手动部署。
+- 已随 2026-08-14 手动部署上线。
 
 ### 4.2 州/地区下拉遮挡页面
 
@@ -230,6 +259,83 @@ git -c http.version=HTTP/1.1 push origin main
 - Cloudflare 当前执行 `npx wrangler deploy`。
 - `dist/` 已提交到仓库，兼容当前部署方式。
 
+### 7.1 CLOUDFLARE_API_TOKEN 获取和使用步骤
+
+用途：
+
+- Wrangler 在非交互环境或自动化部署中需要 `CLOUDFLARE_API_TOKEN`。
+- 如果没有 token，`npm run deploy` 会在 `npx wrangler deploy` 阶段报错：
+
+```text
+In a non-interactive environment, it's necessary to set a CLOUDFLARE_API_TOKEN environment variable for wrangler to work.
+```
+
+获取 Token：
+
+1. 打开 Cloudflare API Tokens 页面：
+
+```text
+https://dash.cloudflare.com/profile/api-tokens
+```
+
+2. 点击 `Create Token`。
+3. 优先选择 `Edit Cloudflare Workers` 模板；如果没有模板，选择 `Custom token`。
+4. 推荐权限：
+   - Account permissions：`Workers Scripts: Edit`
+   - Account permissions：`Account Settings: Read`
+   - Zone permissions：`Zone: Read`
+   - 如使用 Workers Routes，再加：`Workers Routes: Edit`
+5. Account Resources 选择当前账号。
+6. Zone Resources 选择 `meiguodizhionline.com`。
+7. 点击 `Continue to summary`。
+8. 点击 `Create Token`。
+9. 立即复制 token。Cloudflare token 通常只完整显示一次。
+
+安全注意：
+
+- 不要把 token 发到聊天窗口、提交到 Git、写入公开文档或放进前端代码。
+- 不要写入仓库内的 `.env`，除非该文件已明确加入 `.gitignore`。
+- 推荐只在当前终端会话临时设置 token。
+
+在本机终端部署：
+
+```bash
+cd /Users/pengguoxin/Documents/GitHub/meiguodizhionline
+export CLOUDFLARE_API_TOKEN="你的 Cloudflare API Token"
+npm run deploy
+```
+
+也可以一行执行：
+
+```bash
+cd /Users/pengguoxin/Documents/GitHub/meiguodizhionline && CLOUDFLARE_API_TOKEN="你的 Cloudflare API Token" npm run deploy
+```
+
+验证 token 是否生效：
+
+```bash
+npx wrangler whoami
+```
+
+部署成功后应看到类似信息：
+
+```text
+Uploaded meiguodizhionline
+Deployed meiguodizhionline triggers
+Current Version ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+部署后检查线上：
+
+```bash
+curl -sS https://meiguodizhionline.com/blog/ | grep "us-address-format-guide"
+curl -I https://meiguodizhionline.com/blog/us-address-format-guide/
+```
+
+如果文章链接可见，且文章页返回 `HTTP/2 200`，说明部署已生效。
+
+### 7.2 常规上线流程
+
 推荐流程：
 
 1. 修改源文件，例如 `index.html`、`assets/css/styles.css`、`assets/js/app.js`、`scripts/generate-country-pages.mjs`。
@@ -273,6 +379,7 @@ curl -sS https://meiguodizhionline.com/ | rg "assets/(css|js)"
 2. 如果 Wrangler 上传整个仓库，会把 `node_modules/workerd` 当资产上传，报 `Asset too large`。
 3. `_redirects` 中使用绝对 URL 会导致 Wrangler 报错：`Only relative URLs are allowed`。
 4. 本地执行 `npm run deploy` 时，如果没有 `CLOUDFLARE_API_TOKEN`，Wrangler 会在非交互环境中拒绝部署。
+5. 部署后会生成 `.wrangler/` 本地缓存目录，不要提交。
 
 当前解决方式：
 
@@ -288,6 +395,7 @@ curl -sS https://meiguodizhionline.com/ | rg "assets/(css|js)"
 
 - `_redirects` 已删除，避免 Wrangler 静态资产部署失败。
 - 如需手动部署，需要先在环境中配置 `CLOUDFLARE_API_TOKEN`。
+- `.wrangler/` 已加入 `.gitignore`。
 
 ## 9. AdSense 信息
 
@@ -307,6 +415,7 @@ google.com, pub-9328440079890728, DIRECT, f08c47fec0942fa0
 
 ## 10. 重要提交索引
 
+- `0a37b00`：新增 5 篇地址格式博客文章，更新博客索引和 sitemap。
 - `8783c54`：修复多控件点击后页面滚动问题，并上线 `20260811-scrollfix1` 资源版本。
 - `7f9ce5a`：整理下拉框修复交接记录。
 - `f9002b5`：修复州/地区原生下拉遮挡问题，并上线 `20260811-dropdown2` 资源版本。
